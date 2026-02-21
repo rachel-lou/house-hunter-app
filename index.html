@@ -29,7 +29,7 @@
   window._fbSubscribe = (cb) => onValue(DATA_REF, (snap) => cb(snap.val()));
   window._fbSave      = (data) => set(DATA_REF, data);
 </script>
- <style>
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0f1117; color: #e2e8f0; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 
@@ -38,21 +38,21 @@
       border-radius: 8px; padding: 8px 12px; font-family: inherit;
       font-size: 14px; width: 100%; outline: none; transition: border-color .2s;
     }
-    input:focus, textarea:focus { border-color: #c084fc; }
+    input:focus, textarea:focus { border-color: var(--accent); }
     input[type=date] { color-scheme: dark; }
-    input[type=checkbox] { width: auto; accent-color: #c084fc; }
+    input[type=checkbox] { width: auto; accent-color: var(--accent); }
     input[type=range] {
       -webkit-appearance: none; height: 6px; border-radius: 3px;
       background: #2d3748; border: none; padding: 0; cursor: pointer;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-      background: linear-gradient(135deg,#c084fc,#818cf8); cursor: pointer;
+      background: var(--accent-gradient); cursor: pointer;
     }
     label { font-size: 12px; color: #94a3b8; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 4px; }
 
     .btn { cursor: pointer; border: none; border-radius: 8px; padding: 10px 20px; font-family: inherit; font-weight: 600; font-size: 14px; transition: all .2s; display: inline-block; }
-    .btn-primary  { background: linear-gradient(135deg,#c084fc,#818cf8); color: #fff; }
+    .btn-primary  { background: var(--accent-gradient); color: #fff; }
     .btn-primary:hover  { opacity: .9; transform: translateY(-1px); }
     .btn-secondary { background: #1e2535; color: #94a3b8; border: 1px solid #2d3748; }
     .btn-secondary:hover { background: #2d3748; color: #e2e8f0; }
@@ -60,38 +60,67 @@
     .btn-danger:hover { background: #f87171; color: #fff; }
     .btn-sm { padding: 7px 14px; font-size: 13px; }
 
-    #app { max-width: 940px; margin: 0 auto; padding: 0 16px 48px; }
+    /* CSS variables per region */
+    body {
+      --accent: #c084fc;
+      --accent2: #818cf8;
+      --accent-gradient: linear-gradient(135deg, #c084fc, #818cf8);
+      --accent-glow: rgba(192,132,252,.1);
+      --accent-dim: #c084fc20;
+      --accent-border: #c084fc40;
+    }
+    body.tahoe {
+      --accent: #38bdf8;
+      --accent2: #34d399;
+      --accent-gradient: linear-gradient(135deg, #38bdf8, #34d399);
+      --accent-glow: rgba(56,189,248,.1);
+      --accent-dim: #38bdf820;
+      --accent-border: #38bdf840;
+    }
+
+    #app { max-width: 940px; margin: 0 auto; padding: 0 16px 80px; }
 
     /* Header */
     #header {
       background: #0d1018; border-bottom: 1px solid #1e2535;
       padding: 14px 24px; display: flex; align-items: center;
       justify-content: space-between; position: sticky; top: 0; z-index: 100;
+      flex-wrap: wrap; gap: 10px;
     }
     #header-left { display: flex; align-items: center; gap: 12px; }
     #header-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #e2e8f0; }
     #header-sub { font-size: 11px; color: #64748b; font-family: 'DM Mono', monospace; }
     #header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
+    /* Region tabs */
+    #region-tabs { display: flex; gap: 6px; }
+    .region-tab {
+      cursor: pointer; padding: 7px 18px; border-radius: 20px; font-size: 13px;
+      font-weight: 600; transition: all .2s; border: 1px solid #2d3748;
+      color: #64748b; background: #1a1f2e; white-space: nowrap;
+    }
+    .region-tab:hover { color: #94a3b8; border-color: #4a5568; }
+    .region-tab.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-border); }
+
     /* Weights panel */
     #weights-panel { background: #11151f; border-bottom: 1px solid #1e2535; padding: 20px 24px; display: none; }
     #weights-panel.open { display: block; }
     #weights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 16px; max-width: 860px; }
-    .weight-row { }
-    .weight-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .weight-badge { font-family: 'DM Mono', monospace; font-size: 13px; color: #c084fc; background: #c084fc15; padding: 2px 8px; border-radius: 6px; }
+    .weight-badge { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); background: var(--accent-dim); padding: 2px 8px; border-radius: 6px; }
 
     /* Toast */
-    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e2535; border: 1px solid #2d3748; color: #e2e8f0; padding: 10px 20px; border-radius: 10px; font-size: 14px; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e2535; border: 1px solid #2d3748; color: #e2e8f0; padding: 10px 20px; border-radius: 10px; font-size: 14px; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
     #toast.show { opacity: 1; }
 
     /* Cards */
-    .house-card { background: #161b27; border: 1px solid #1e2535; border-radius: 16px; padding: 20px; transition: all .2s; margin-bottom: 12px; }
-    .house-card:hover { border-color: #c084fc20; }
+    .house-card { background: #161b27; border: 1px solid #1e2535; border-radius: 16px; padding: 20px; transition: border-color .2s; margin-bottom: 12px; }
+    .house-card:hover { border-color: var(--accent-border); }
     .card-top { display: flex; align-items: flex-start; gap: 14px; }
     .rank-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 500; font-size: 14px; flex-shrink: 0; }
     .card-body { flex: 1; min-width: 0; }
     .card-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #e2e8f0; }
+    .card-title-link { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #e2e8f0; text-decoration: none; border-bottom: 1px dashed var(--accent-border); transition: color .2s, border-color .2s; }
+    .card-title-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
     .card-addr { font-size: 13px; color: #64748b; margin: 2px 0 10px; }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 8px; padding: 3px 10px; font-size: 12px; }
@@ -101,17 +130,15 @@
     .chip-hl span.val { color: #4ade80; font-weight: 700; }
     .viewed-badge { font-size: 11px; background: #4ade8020; color: #4ade80; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
     .score-pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
-    .card-notes { margin-top: 12px; padding: 10px 12px; background: #0f1117; border-radius: 8px; font-size: 13px; color: #94a3b8; font-style: italic; border-left: 3px solid #c084fc40; }
+    .card-notes { margin-top: 12px; padding: 10px 12px; background: #0f1117; border-radius: 8px; font-size: 13px; color: #94a3b8; font-style: italic; border-left: 3px solid var(--accent-border); }
     .card-notes-toggle { margin-top: 10px; display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: #64748b; background: none; border: none; padding: 0; font-family: inherit; transition: color .2s; }
-    .card-notes-toggle:hover { color: #c084fc; }
-    .card-notes-full { margin-top: 0; white-space: pre-wrap; }
-    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+    .card-notes-toggle:hover { color: var(--accent); }
+    .card-notes-full { white-space: pre-wrap; }
     .btn-edit-card { background: #1e2535; border: 1px solid #2d3748; color: #94a3b8; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
-    .btn-edit-card:hover { background: linear-gradient(135deg,#c084fc,#818cf8); color: #fff; border-color: transparent; }
+    .btn-edit-card:hover { background: var(--accent-gradient); color: #fff; border-color: transparent; }
 
     /* Score ring */
-    .score-ring-wrap { flex-shrink: 0; }
-    .score-ring-outer { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .score-ring-outer { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .score-ring-inner { width: 38px; height: 38px; border-radius: 50%; background: #161b27; display: flex; align-items: center; justify-content: center; }
     .score-ring-text { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700; }
 
@@ -119,260 +146,249 @@
     .section-card { background: #161b27; border: 1px solid #1e2535; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
     .section-title { font-size: 13px; font-weight: 600; color: #94a3b8; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 14px; }
-    .field { }
     .computed-field { padding: 8px 12px; background: #0f1117; border-radius: 8px; font-size: 14px; font-family: 'DM Mono', monospace; }
 
-    /* Edit header */
     #edit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
     #edit-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
     #edit-actions { display: flex; gap: 8px; }
-
-    /* URL bar */
     #url-bar { background: #161b27; border: 1px solid #1e2535; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
     #url-row { display: flex; gap: 8px; }
     #url-row input { flex: 1; }
-
-    /* Scores grid */
     #scores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 20px; }
-    .score-item { }
-    .score-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .score-item-label { font-size: 14px; color: #cbd5e1; }
-    .score-item-right { display: flex; gap: 6px; align-items: center; }
-    .score-wt { font-size: 11px; color: #64748b; font-family: 'DM Mono', monospace; }
     .score-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 700; padding: 2px 10px; border-radius: 8px; }
     .score-ticks { display: flex; justify-content: space-between; font-size: 10px; color: #4a5568; margin-top: 2px; font-family: 'DM Mono', monospace; }
     .weighted-total { margin-top: 20px; padding: 16px; background: #0f1117; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .weighted-total-label { color: #94a3b8; font-size: 14px; }
     .weighted-total-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; }
 
-    /* Tabs */
-    #tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-    .tab { cursor: pointer; padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all .2s; color: #64748b; }
-    .tab:hover { color: #94a3b8; }
-    .tab.active { background: linear-gradient(135deg,#c084fc20,#818cf820); color: #c084fc; border: 1px solid #c084fc40; }
+    /* View tabs (rankings / edit form) */
+    #view-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .view-tab { cursor: pointer; padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all .2s; color: #64748b; }
+    .view-tab:hover { color: #94a3b8; }
+    .view-tab.active { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
 
-    /* Empty state */
-    #empty { text-align: center; padding: 80px 20px; }
-    #empty-icon { font-size: 48px; margin-bottom: 16px; }
-    #empty-title { font-size: 18px; font-family: 'Playfair Display', serif; color: #64748b; margin-bottom: 8px; }
-    #empty-sub { font-size: 14px; color: #4a5568; margin-bottom: 24px; }
-
-    /* Alert bar */
     .alert { border-radius: 10px; padding: 10px 16px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; margin: 12px 0; }
     .alert-success { background: #4ade8015; border: 1px solid #4ade8040; color: #4ade80; }
     .alert-error   { background: #f8717115; border: 1px solid #f8717140; color: #f87171; }
     .alert-close { background: none; border: none; color: inherit; cursor: pointer; font-size: 16px; }
 
-    /* Loading */
     #loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: #64748b; font-family: 'DM Mono', monospace; }
-
-    /* Config screen */
-    #config-screen { max-width: 600px; margin: 80px auto; text-align: center; padding: 40px; background: #161b27; border: 1px solid #1e2535; border-radius: 20px; }
+    #config-screen { max-width: 600px; margin: 80px auto; text-align: center; padding: 40px; background: #161b27; border: 1px solid #1e2535; border-radius: 20px; display: none; }
     #config-screen h1 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 12px; }
     #config-screen p  { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-    #config-screen code { background: #0f1117; padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 13px; color: #c084fc; }
+    #config-screen code { background: #0f1117; padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); }
 
-    @media (max-width: 600px) {
-      #header { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+    /* Footer */
+    #footer { background: #0d1018; border-top: 1px solid #1e2535; padding: 14px 24px; position: sticky; bottom: 0; z-index: 100; }
+    #footer-inner { max-width: 940px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+
+    @media (max-width: 640px) {
+      #header { padding: 12px 16px; }
       #header-actions { width: 100%; }
+      #region-tabs { order: -1; width: 100%; }
     }
   </style>
 </head>
 <body>
 
 <div id="loading">Loading your houses…</div>
-<div id="config-screen" style="display:none">
+<div id="config-screen">
   <div style="font-size:48px;margin-bottom:16px">🔧</div>
   <h1>Firebase Setup Needed</h1>
-  <p>Open <code>index.html</code> in a text editor and replace the <code>firebaseConfig</code> block near the top with your own Firebase project credentials. See the <strong>README.md</strong> included with this file for step-by-step instructions.</p>
+  <p>Open <code>index.html</code> in a text editor and replace the <code>firebaseConfig</code> block near the top with your own Firebase credentials. See the <strong>README.md</strong> for instructions.</p>
 </div>
 
-<!-- Header -->
 <div id="header" style="display:none">
   <div id="header-left">
     <span style="font-size:24px">🏡</span>
     <div>
       <div id="header-title">House Hunter</div>
-      <div id="header-sub">0 properties</div>
+      <div id="header-sub"></div>
     </div>
+  </div>
+  <div id="region-tabs">
+    <div class="region-tab active" data-region="bayarea">🌉 Bay Area</div>
+    <div class="region-tab"       data-region="tahoe">🏔 Tahoe</div>
   </div>
   <div id="header-actions">
     <button class="btn btn-secondary btn-sm" id="btn-weights">⚙️ Weights</button>
-    <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Export CSV</button>
-    <label class="btn btn-secondary btn-sm" style="cursor:pointer;margin:0">
-      ⬆ Import CSV
-      <input type="file" accept=".csv" id="csv-import-input" style="display:none" />
-    </label>
     <button class="btn btn-primary btn-sm" id="btn-add">+ Add House</button>
   </div>
 </div>
 
-<!-- Weights panel -->
 <div id="weights-panel">
-  <div style="font-size:13px;color:#94a3b8;margin-bottom:16px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;">
-    Category Weights (1 = Low, 5 = High)
+  <div style="font-size:13px;color:#94a3b8;margin-bottom:16px;font-weight:600;letter-spacing:.05em;text-transform:uppercase">
+    Category Weights for <span id="weights-region-label"></span> (1 = Low, 5 = High)
   </div>
   <div id="weights-grid"></div>
 </div>
 
-<!-- Main -->
 <div id="app" style="display:none">
   <div id="alert-area"></div>
-  <div id="tabs" style="display:none"></div>
-
+  <div id="view-tabs" style="display:none"></div>
   <div id="view-rankings"></div>
-  <div id="view-edit"    style="display:none"></div>
+  <div id="view-edit" style="display:none"></div>
+</div>
+
+<!-- Footer -->
+<div id="footer" style="display:none">
+  <div id="footer-inner">
+    <span style="font-size:13px;color:#4a5568;font-family:'DM Mono',monospace">house-hunter</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Export CSV</button>
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer;margin:0">
+        ⬆ Import CSV
+        <input type="file" accept=".csv" id="csv-import-input" style="display:none" />
+      </label>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script type="module">
-// ─── Constants ───────────────────────────────────────────────────────────────
 const CATEGORIES = [
   { id:"bart",     label:"Proximity to BART",    icon:"🚇" },
   { id:"grocery",  label:"Proximity to Grocery", icon:"🛒" },
   { id:"kitchen",  label:"Kitchen",              icon:"🍳" },
   { id:"flow",     label:"Flow",                 icon:"🌊" },
-  { id:"flip",     label:"Opportunity to Flip",  icon:"💰" },
+  { id:"flip",     label:"Opportunity to Increase Value",  icon:"💰" },
   { id:"school",   label:"School District",      icon:"🏫" },
   { id:"vibe",     label:"Vibe",                 icon:"✨" },
   { id:"finished", label:"How Finished It Is",   icon:"🔨" },
   { id:"privacy",  label:"Privacy",              icon:"🔒" },
 ];
-const DEFAULT_WEIGHTS = Object.fromEntries(CATEGORIES.map(c => [c.id, 3]));
-const DEFAULT_SCORES  = Object.fromEntries(CATEGORIES.map(c => [c.id, 5]));
+const DEFAULT_WEIGHTS = Object.fromEntries(CATEGORIES.map(c=>[c.id,3]));
+const DEFAULT_SCORES  = Object.fromEntries(CATEGORIES.map(c=>[c.id,5]));
+const REGIONS = { bayarea:{label:"Bay Area",emoji:"🌉"}, tahoe:{label:"Tahoe",emoji:"🏔"} };
+
 const emptyHouse = () => ({
-  id: Date.now().toString(),
-  nickname:"", address:"", listPrice:"", predictedSellPrice:"",
-  upgradeEstimate:"", sqFeet:"", beds:"", baths:"", garage:"",
-  yearBuilt:"", dateListed:"", viewed:false, sold:false, listingUrl:"", notes:"",
-  scores:{ ...DEFAULT_SCORES },
+  id:Date.now().toString(), nickname:"", address:"", listPrice:"",
+  predictedSellPrice:"", upgradeEstimate:"", sqFeet:"", beds:"", baths:"",
+  garage:"", yearBuilt:"", dateListed:"", viewed:false, sold:false,
+  listingUrl:"", notes:"", scores:{...DEFAULT_SCORES},
 });
 
-// ─── State ────────────────────────────────────────────────────────────────────
-let houses  = [];
-let weights = { ...DEFAULT_WEIGHTS };
-let editingId = null;
-let editForm  = null;
+// ── Per-region state ──────────────────────────────────────────────────────────
+const regionData = {
+  bayarea: { houses:[], weights:{...DEFAULT_WEIGHTS} },
+  tahoe:   { houses:[], weights:{...DEFAULT_WEIGHTS} },
+};
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const fmt$ = v => { const n=parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isNaN(n)?"":("$"+n.toLocaleString()); };
+let activeRegion = "bayarea";
+let editingId    = null;
+let editForm     = null;
+let activeView   = "rankings";
+
+const R       = () => regionData[activeRegion];
+const houses  = () => R().houses;
+const weights = () => R().weights;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const fmt$ = v => { const n=parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isNaN(n)?"":"$"+n.toLocaleString(); };
 const finalPrice = h => {
   const s=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
   const u=parseFloat(String(h.upgradeEstimate||"").replace(/[^0-9.]/g,""));
-  if(!s&&!u) return null;
-  return (s||0)+(u||0);
+  return (!s&&!u)?null:(s||0)+(u||0);
 };
 const ppsf = h => {
-  const p=parseFloat(String(h.listPrice||"").replace(/[^0-9.]/g,""));
-  const q=parseFloat(h.sqFeet);
-  if(!p||!q) return "—";
-  return "$"+Math.round(p/q).toLocaleString()+"/sqft";
+  const p=parseFloat(String(h.listPrice||"").replace(/[^0-9.]/g,"")), q=parseFloat(h.sqFeet);
+  return (!p||!q)?"—":"$"+Math.round(p/q).toLocaleString()+"/sqft";
 };
-const computeScore = (scores,wts) => {
-  let t=0,m=0;
-  for(const c of CATEGORIES){ const w=wts[c.id]||1; t+=(scores[c.id]||0)*w; m+=10*w; }
+const computeScore=(scores,wts)=>{
+  let t=0,m=0; for(const c of CATEGORIES){const w=wts[c.id]||1;t+=(scores[c.id]||0)*w;m+=10*w;}
   return m===0?0:Math.round(t/m*100);
 };
-const scoreColor = s => s>=75?"#4ade80":s>=50?"#facc15":"#f87171";
-const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const scoreColor=s=>s>=75?"#4ade80":s>=50?"#facc15":"#f87171";
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
-function toast(msg, dur=2500) {
-  const el=document.getElementById("toast");
-  el.textContent=msg; el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), dur);
+function toast(msg,dur=2500){
+  const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),dur);
+}
+function showAlert(msg,type="success"){
+  document.getElementById("alert-area").innerHTML=
+    `<div class="alert alert-${type}">${esc(msg)}<button class="alert-close" onclick="this.parentElement.remove()">×</button></div>`;
 }
 
-function showAlert(msg, type="success") {
-  const area=document.getElementById("alert-area");
-  area.innerHTML=`<div class="alert alert-${type}">${esc(msg)}<button class="alert-close" onclick="this.parentElement.remove()">×</button></div>`;
+// ── Firebase ──────────────────────────────────────────────────────────────────
+const isConfigured=()=>typeof window._fbSaveRegion==="function";
+const saveToFirebase=()=>{ if(isConfigured()) window._fbSaveRegion(activeRegion,R()).catch(e=>toast("⚠️ "+e.message,4000)); };
+
+// ── Region switching ──────────────────────────────────────────────────────────
+function switchRegion(region){
+  if(region===activeRegion) return;
+  editingId=null; editForm=null; activeView="rankings";
+  activeRegion=region;
+  document.body.classList.toggle("tahoe", region==="tahoe");
+  document.querySelectorAll(".region-tab").forEach(t=>t.classList.toggle("active",t.dataset.region===region));
+  renderAll();
 }
 
-// ─── Firebase ─────────────────────────────────────────────────────────────────
-function isConfigured() {
-  try {
-    return typeof window._fbSave === "function" && typeof window._fbSubscribe === "function";
-  } catch(e){ return false; }
-}
-
-async function saveToFirebase() {
-  if(!isConfigured()) return;
-  try {
-    await window._fbSave({ houses, weights });
-  } catch(e) { toast("⚠️ Save failed: "+e.message, 4000); }
-}
-
-// ─── Render ───────────────────────────────────────────────────────────────────
-function renderAll() {
-  document.getElementById("header-sub").textContent = `${houses.length} propert${houses.length===1?"y":"ies"}`;
+// ── Render all ────────────────────────────────────────────────────────────────
+function renderAll(){
+  const h=houses(), r=REGIONS[activeRegion];
+  document.getElementById("header-sub").textContent=
+    `${r.emoji} ${r.label} · ${h.filter(x=>!x.sold).length} active · ${h.length} total`;
+  document.getElementById("weights-region-label").textContent=r.label;
   renderWeightsPanel();
-  if(editingId) renderEdit();
+  if(editingId&&activeView==="edit") renderEdit();
   else renderRankings();
-  renderTabs();
+  renderViewTabs();
 }
 
-function renderTabs() {
-  const tabs=document.getElementById("tabs");
-  if(!editingId){ tabs.style.display="none"; return; }
+function renderViewTabs(){
+  const tabs=document.getElementById("view-tabs");
+  if(!editingId){tabs.style.display="none";return;}
   tabs.style.display="flex";
-  const name = editingId==="new"?"➕ New House":`✏️ ${editForm?.nickname||"Editing"}`;
+  const name=editingId==="new"?"➕ New House":`✏️ ${editForm?.nickname||"Editing"}`;
   tabs.innerHTML=`
-    <div class="tab ${!editingId||activeView==="rankings"?"active":""}" id="tab-rankings">Rankings</div>
-    <div class="tab ${activeView==="edit"?"active":""}" id="tab-edit">${esc(name)}</div>`;
-  document.getElementById("tab-rankings").onclick = ()=>{ activeView="rankings"; renderAll(); };
-  document.getElementById("tab-edit").onclick     = ()=>{ activeView="edit";     renderAll(); };
+    <div class="view-tab ${activeView==="rankings"?"active":""}" id="vtab-r">Rankings</div>
+    <div class="view-tab ${activeView==="edit"?"active":""}"     id="vtab-e">${esc(name)}</div>`;
+  document.getElementById("vtab-r").onclick=()=>{activeView="rankings";renderAll();};
+  document.getElementById("vtab-e").onclick=()=>{activeView="edit";renderAll();};
 }
 
-let activeView = "rankings";
-
-function renderRankings() {
+function renderRankings(){
   document.getElementById("view-edit").style.display="none";
-  const el=document.getElementById("view-rankings");
-  el.style.display="block";
-  if(houses.length===0){
-    el.innerHTML=`<div id="empty">
-      <div id="empty-icon">🏡</div>
-      <div id="empty-title">No houses yet</div>
-      <div id="empty-sub">Add your first property to get started</div>
+  const el=document.getElementById("view-rankings"); el.style.display="block";
+  const h=houses(), wts=weights(), r=REGIONS[activeRegion];
+  if(h.length===0){
+    el.innerHTML=`<div style="text-align:center;padding:80px 20px">
+      <div style="font-size:48px;margin-bottom:16px">${r.emoji}</div>
+      <div style="font-size:18px;font-family:'Playfair Display',serif;color:#64748b;margin-bottom:8px">No ${r.label} houses yet</div>
+      <div style="font-size:14px;color:#4a5568;margin-bottom:24px">Add your first property to get started</div>
       <button class="btn btn-primary" id="empty-add">Add First House</button>
     </div>`;
-    document.getElementById("empty-add").onclick=startAdd;
-    return;
+    document.getElementById("empty-add").onclick=startAdd; return;
   }
-  const sorted=[...houses].sort((a,b)=>{
-    if(a.sold && !b.sold) return 1;
-    if(!a.sold && b.sold) return -1;
-    return computeScore(b.scores,weights)-computeScore(a.scores,weights);
+  const sorted=[...h].sort((a,b)=>{
+    if(a.sold&&!b.sold)return 1; if(!a.sold&&b.sold)return -1;
+    return computeScore(b.scores,wts)-computeScore(a.scores,wts);
   });
-  const activeHouses=sorted.filter(h=>!h.sold);
+  const activeH=sorted.filter(x=>!x.sold);
   const rankColors=["#ffd700","#c0c0c0","#cd7f32"];
-  el.innerHTML=sorted.map((h,i)=>{
-    const sold=!!h.sold;
-    const activeRank=activeHouses.indexOf(h);
-    const sc=computeScore(h.scores,weights);
-    const rc=!sold&&activeRank<3?rankColors[activeRank]:"#4a5568";
-    const rbg=!sold&&activeRank<3?`${rankColors[activeRank]}20`:"#1a1f2e";
-    const rankLabel=sold?"—":activeRank+1;
-    const fp=finalPrice(h);
-    const deg=sc*3.6;
-    const col=sold?"#4a5568":scoreColor(sc);
-    const hasNotes=h.notes&&h.notes.trim().length>0;
-    const isLong=h.notes&&h.notes.length>120;
-    const notesSection=hasNotes?`
-      <div class="card-notes" id="notes-preview-${esc(h.id)}" style="${sold?"opacity:0.5":""}">
+  el.innerHTML=sorted.map(h=>{
+    const sold=!!h.sold, ar=activeH.indexOf(h), sc=computeScore(h.scores,wts);
+    const rc=!sold&&ar<3?rankColors[ar]:"#4a5568";
+    const rbg=!sold&&ar<3?rankColors[ar]+"20":"#1a1f2e";
+    const fp=finalPrice(h), deg=sc*3.6, col=sold?"#4a5568":scoreColor(sc);
+    const hasNotes=h.notes&&h.notes.trim().length>0, isLong=h.notes&&h.notes.length>120;
+    const notesHtml=hasNotes?`
+      <div class="card-notes" id="np-${esc(h.id)}" style="${sold?"opacity:.5":""}">
         <span class="card-notes-full">${esc(isLong?h.notes.slice(0,120)+"…":h.notes)}</span>
       </div>
-      ${isLong?`<button class="card-notes-toggle" data-notesid="${esc(h.id)}" data-expanded="false">
-        <span>▸</span> <span class="toggle-label">Show full notes</span>
-      </button>`:""}`:""
+      ${isLong?`<button class="card-notes-toggle" data-nid="${esc(h.id)}" data-exp="false"><span>▸</span> <span class="tgl">Show full notes</span></button>`:""}`:""
     ;
-    return `<div class="house-card" data-id="${esc(h.id)}" style="${sold?"opacity:0.5;filter:grayscale(0.6)":""}">
-      ${sold?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:#f87171;font-weight:600;letter-spacing:.05em;text-transform:uppercase">🚫 Sold / Off Market</div>`:""}
+    return `<div class="house-card" style="${sold?"opacity:.5;filter:grayscale(.6)":""}">
+      ${sold?`<div style="font-size:12px;color:#f87171;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px">🚫 Sold / Off Market</div>`:""}
       <div class="card-top">
-        <div class="rank-badge" style="background:${rbg};color:${rc}">${rankLabel}</div>
+        <div class="rank-badge" style="background:${rbg};color:${rc}">${sold?"—":ar+1}</div>
         <div class="card-body">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-            <span class="card-title" style="${sold?"text-decoration:line-through;color:#64748b":""}">${esc(h.nickname||"Unnamed House")}</span>
+            ${h.listingUrl
+              ? `<a href="${esc(h.listingUrl)}" target="_blank" rel="noopener" class="card-title-link" style="${sold?"text-decoration:line-through;color:#64748b":""}">${esc(h.nickname||"Unnamed House")}</a>`
+              : `<span class="card-title" style="${sold?"text-decoration:line-through;color:#64748b":""}">${esc(h.nickname||"Unnamed House")}</span>`
+            }
             ${h.viewed&&!sold?'<span class="viewed-badge">👁 Viewed</span>':""}
             ${!sold?`<span class="score-pill" style="background:${col}20;color:${col}">${sc}%</span>`:""}
           </div>
@@ -387,357 +403,256 @@ function renderRankings() {
             ${h.yearBuilt?`<div class="chip"><span class="lbl">Built: </span><span class="val">${esc(h.yearBuilt)}</span></div>`:""}
           </div>`:""}
         </div>
-        <div class="score-ring-wrap">
-          <div class="score-ring-outer" style="background:conic-gradient(${col} ${deg}deg,#1e2535 0deg)">
-            <div class="score-ring-inner"><span class="score-ring-text" style="color:${col}">${sold?"—":sc+"%"}</span></div>
-          </div>
+        <div class="score-ring-outer" style="background:conic-gradient(${col} ${deg}deg,#1e2535 0deg)">
+          <div class="score-ring-inner"><span class="score-ring-text" style="color:${col}">${sold?"—":sc+"%"}</span></div>
         </div>
       </div>
-      ${notesSection}
-      <div class="card-footer">
-        <div></div>
-        <button class="btn-edit-card" data-editid="${esc(h.id)}">✏️ Edit</button>
+      ${notesHtml}
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn-edit-card" data-eid="${esc(h.id)}">✏️ Edit</button>
       </div>
     </div>`;
   }).join("");
 
-  // Edit buttons
   el.querySelectorAll(".btn-edit-card").forEach(btn=>{
-    btn.onclick=(e)=>{
-      e.stopPropagation();
-      startEdit(houses.find(h=>h.id===btn.dataset.editid));
-    };
+    btn.onclick=()=>startEdit(houses().find(x=>x.id===btn.dataset.eid));
   });
-
-  // Expandable notes toggles
   el.querySelectorAll(".card-notes-toggle").forEach(btn=>{
-    btn.onclick=(e)=>{
-      e.stopPropagation();
-      const id=btn.dataset.notesid;
-      const expanded=btn.dataset.expanded==="true";
-      const house=houses.find(h=>h.id===id);
-      const preview=document.getElementById("notes-preview-"+id);
-      if(expanded){
-        preview.querySelector(".card-notes-full").textContent=house.notes.slice(0,120)+"…";
-        btn.querySelector("span").textContent="▸";
-        btn.querySelector(".toggle-label").textContent="Show full notes";
-        btn.dataset.expanded="false";
-      } else {
-        preview.querySelector(".card-notes-full").textContent=house.notes;
-        btn.querySelector("span").textContent="▾";
-        btn.querySelector(".toggle-label").textContent="Hide notes";
-        btn.dataset.expanded="true";
-      }
+    btn.onclick=()=>{
+      const exp=btn.dataset.exp==="true", house=houses().find(x=>x.id===btn.dataset.nid);
+      const preview=document.getElementById("np-"+btn.dataset.nid);
+      if(exp){ preview.querySelector(".card-notes-full").textContent=house.notes.slice(0,120)+"…"; btn.querySelector("span").textContent="▸"; btn.querySelector(".tgl").textContent="Show full notes"; btn.dataset.exp="false"; }
+      else { preview.querySelector(".card-notes-full").textContent=house.notes; btn.querySelector("span").textContent="▾"; btn.querySelector(".tgl").textContent="Hide notes"; btn.dataset.exp="true"; }
     };
   });
 }
 
-function renderWeightsPanel() {
-  const grid=document.getElementById("weights-grid");
-  grid.innerHTML=CATEGORIES.map(cat=>`
-    <div class="weight-row">
-      <div class="weight-label-row">
+function renderWeightsPanel(){
+  const wts=weights();
+  document.getElementById("weights-grid").innerHTML=CATEGORIES.map(cat=>`
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <span style="font-size:13px;color:#cbd5e1">${cat.icon} ${esc(cat.label)}</span>
-        <span class="weight-badge" id="wbadge-${cat.id}">${weights[cat.id]}×</span>
+        <span class="weight-badge" id="wb-${cat.id}">${wts[cat.id]}×</span>
       </div>
-      <input type="range" min="1" max="5" step="1" value="${weights[cat.id]}" data-cat="${cat.id}" class="weight-slider"/>
+      <input type="range" min="1" max="5" step="1" value="${wts[cat.id]}" data-cat="${cat.id}" class="wslider"/>
     </div>`).join("");
-  grid.querySelectorAll(".weight-slider").forEach(sl=>{
-    sl.oninput=()=>{
-      weights[sl.dataset.cat]=parseInt(sl.value);
-      document.getElementById("wbadge-"+sl.dataset.cat).textContent=sl.value+"×";
-      saveToFirebase();
-      renderAll();
-    };
+  document.querySelectorAll(".wslider").forEach(sl=>{
+    sl.oninput=()=>{ weights()[sl.dataset.cat]=parseInt(sl.value); document.getElementById("wb-"+sl.dataset.cat).textContent=sl.value+"×"; saveToFirebase(); renderAll(); };
   });
 }
 
-function renderEdit() {
+function renderEdit(){
   document.getElementById("view-rankings").style.display="none";
-  const el=document.getElementById("view-edit");
-  el.style.display="block";
-  const h=editForm;
-  const fp=finalPrice(h);
+  const el=document.getElementById("view-edit"); el.style.display="block";
+  const h=editForm, wts=weights(), fp=finalPrice(h), ws=computeScore(h.scores,wts), wc=scoreColor(ws);
   const scoreRows=CATEGORIES.map(cat=>{
-    const sc=h.scores[cat.id]||5;
-    const col=sc>=7?"#4ade80":sc>=4?"#facc15":"#f87171";
-    const wt=weights[cat.id];
-    return `<div class="score-item">
-      <div class="score-item-header">
-        <span class="score-item-label">${cat.icon} ${esc(cat.label)}</span>
-        <div class="score-item-right">
-          <span class="score-wt">${wt}× wt</span>
-          <span class="score-val" id="sval-${cat.id}" style="color:${col};background:${col}15">${sc}/10</span>
+    const sc=h.scores[cat.id]||5, col=sc>=7?"#4ade80":sc>=4?"#facc15":"#f87171";
+    return `<div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:14px;color:#cbd5e1">${cat.icon} ${esc(cat.label)}</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:11px;color:#64748b;font-family:'DM Mono',monospace">${wts[cat.id]}× wt</span>
+          <span class="score-val" id="sv-${cat.id}" style="color:${col};background:${col}15">${sc}/10</span>
         </div>
       </div>
-      <input type="range" min="1" max="10" step="1" value="${sc}" class="score-slider" data-cat="${cat.id}"/>
+      <input type="range" min="1" max="10" step="1" value="${sc}" class="sslider" data-cat="${cat.id}"/>
       <div class="score-ticks"><span>1</span><span>5</span><span>10</span></div>
     </div>`;
   }).join("");
-  const ws=computeScore(h.scores,weights);
-  const wc=scoreColor(ws);
   el.innerHTML=`
     <div id="edit-header">
       <div id="edit-title">${esc(editingId==="new"?"Add New House":h.nickname||"Edit House")}</div>
       <div id="edit-actions">
-        ${editingId!=="new"?`<button class="btn btn-danger btn-sm" id="btn-delete">Delete</button>`:""}
-        <button class="btn btn-secondary btn-sm" id="btn-cancel">Cancel</button>
-        <button class="btn btn-primary btn-sm" id="btn-save-form">Save House</button>
+        ${editingId!=="new"?`<button class="btn btn-danger btn-sm" id="btn-del">Delete</button>`:""}
+        <button class="btn btn-secondary btn-sm" id="btn-can">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="btn-sv">Save House</button>
       </div>
     </div>
-
-    <!-- URL -->
     <div id="url-bar">
       <label>Listing URL (paste to auto-populate)</label>
       <div id="url-row">
-        <input id="url-input" value="${esc(h.listingUrl||"")}" placeholder="https://www.zillow.com/…" />
-        <button class="btn btn-secondary btn-sm" id="btn-autofill" style="white-space:nowrap;flex-shrink:0">✨ Auto-fill</button>
+        <input id="url-input" value="${esc(h.listingUrl||"")}" placeholder="https://www.zillow.com/…"/>
+        <button class="btn btn-secondary btn-sm" id="btn-af" style="white-space:nowrap;flex-shrink:0">✨ Auto-fill</button>
       </div>
     </div>
-
-    <!-- Property Info -->
     <div class="section-card">
       <div class="section-title">🏠 Property Info</div>
       <div class="form-grid">
-        ${field("Nickname *","nickname",h.nickname,"e.g. The Blue House")}
-        ${field("Address","address",h.address,"123 Main St, Oakland CA")}
-        ${field("List Price ($)","listPrice",h.listPrice,"850000")}
-        ${field("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"875000")}
-        ${field("Upgrade Estimate ($)","upgradeEstimate",h.upgradeEstimate,"30000")}
-        ${field("Sq Feet","sqFeet",h.sqFeet,"1800")}
-        ${field("Beds","beds",h.beds,"3")}
-        ${field("Baths","baths",h.baths,"2")}
-        ${field("Garage","garage",h.garage,"Yes / No / 2-car")}
-        ${field("Year Built","yearBuilt",h.yearBuilt,"1965")}
-        <div class="field"><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
-        <div class="field"><label>Price per SqFt</label><div class="computed-field" style="color:#c084fc">${esc(ppsf(h))}</div></div>
-        ${fp!==null?`<div class="field"><label>Final Price (Sell + Upgrades)</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${fp.toLocaleString()}</div></div>`:""}
+        ${fld("Nickname *","nickname",h.nickname,"e.g. The Blue House")}
+        ${fld("Address","address",h.address,"123 Main St")}
+        ${fld("List Price ($)","listPrice",h.listPrice,"850000")}
+        ${fld("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"875000")}
+        ${fld("Upgrade Estimate ($)","upgradeEstimate",h.upgradeEstimate,"30000")}
+        ${fld("Sq Feet","sqFeet",h.sqFeet,"1800")}
+        ${fld("Beds","beds",h.beds,"3")}
+        ${fld("Baths","baths",h.baths,"2")}
+        ${fld("Garage","garage",h.garage,"Yes / No / 2-car")}
+        ${fld("Year Built","yearBuilt",h.yearBuilt,"1965")}
+        <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
+        <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
+        ${fp!==null?`<div><label>Final Price (Sell + Upgrades)</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${fp.toLocaleString()}</div></div>`:""}
       </div>
       <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:16px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:14px;color:#cbd5e1">
-          <input type="checkbox" id="chk-viewed" ${h.viewed?"checked":""}/>
-          We've toured this house
+          <input type="checkbox" id="chk-viewed" ${h.viewed?"checked":""}/>We've toured this house
         </label>
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:14px;color:#f87171">
-          <input type="checkbox" id="chk-sold" ${h.sold?"checked":""} style="accent-color:#f87171"/>
-          🚫 House is sold / off market
+          <input type="checkbox" id="chk-sold" ${h.sold?"checked":""} style="accent-color:#f87171"/>🚫 House is sold / off market
         </label>
       </div>
     </div>
-
-    <!-- Notes -->
     <div class="section-card">
       <div class="section-title">📝 Notes</div>
       <textarea id="notes-area" rows="4" placeholder="What stood out? Concerns? Things to follow up on…" style="resize:vertical">${esc(h.notes||"")}</textarea>
     </div>
-
-    <!-- Scores -->
     <div class="section-card">
       <div class="section-title">⭐ Category Scores</div>
       <div id="scores-grid">${scoreRows}</div>
       <div class="weighted-total">
-        <span class="weighted-total-label">Weighted Score</span>
-        <span class="weighted-total-val" id="total-score-display" style="color:${wc}">${ws}%</span>
+        <span style="color:#94a3b8;font-size:14px">Weighted Score</span>
+        <span class="weighted-total-val" id="total-score" style="color:${wc}">${ws}%</span>
       </div>
     </div>
-
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-      <button class="btn btn-secondary" id="btn-cancel2">Cancel</button>
-      <button class="btn btn-primary"   id="btn-save-form2">Save House</button>
+      <button class="btn btn-secondary" id="btn-can2">Cancel</button>
+      <button class="btn btn-primary"   id="btn-sv2">Save House</button>
     </div>`;
 
-  // Wire fields
-  el.querySelectorAll("[data-field]").forEach(inp=>{
-    inp.oninput=()=>{ editForm[inp.dataset.field]=inp.value; refreshComputed(); };
-  });
+  el.querySelectorAll("[data-field]").forEach(inp=>{ inp.oninput=()=>{ editForm[inp.dataset.field]=inp.value; }; });
   document.getElementById("chk-viewed").onchange=e=>{ editForm.viewed=e.target.checked; };
-  document.getElementById("chk-sold").onchange=e=>{ editForm.sold=e.target.checked; };
-  document.getElementById("notes-area").oninput=e=>{ editForm.notes=e.target.value; };
-
-  // Score sliders
-  el.querySelectorAll(".score-slider").forEach(sl=>{
+  document.getElementById("chk-sold").onchange  =e=>{ editForm.sold  =e.target.checked; };
+  document.getElementById("notes-area").oninput =e=>{ editForm.notes =e.target.value;  };
+  el.querySelectorAll(".sslider").forEach(sl=>{
     sl.oninput=()=>{
-      const v=parseInt(sl.value);
-      editForm.scores[sl.dataset.cat]=v;
+      const v=parseInt(sl.value); editForm.scores[sl.dataset.cat]=v;
       const col=v>=7?"#4ade80":v>=4?"#facc15":"#f87171";
-      const badge=document.getElementById("sval-"+sl.dataset.cat);
-      badge.textContent=v+"/10"; badge.style.color=col; badge.style.background=col+"15";
-      const ws2=computeScore(editForm.scores,weights);
-      const wc2=scoreColor(ws2);
-      const td=document.getElementById("total-score-display");
-      td.textContent=ws2+"%"; td.style.color=wc2;
+      const b=document.getElementById("sv-"+sl.dataset.cat); b.textContent=v+"/10"; b.style.color=col; b.style.background=col+"15";
+      const ws2=computeScore(editForm.scores,weights()), td=document.getElementById("total-score");
+      td.textContent=ws2+"%"; td.style.color=scoreColor(ws2);
     };
   });
-
-  document.getElementById("btn-autofill").onclick=doAutofill;
-  document.getElementById("btn-save-form").onclick=saveForm;
-  document.getElementById("btn-save-form2").onclick=saveForm;
-  document.getElementById("btn-cancel").onclick=cancelEdit;
-  document.getElementById("btn-cancel2").onclick=cancelEdit;
-  if(editingId!=="new") document.getElementById("btn-delete").onclick=()=>deleteHouse(editingId);
+  document.getElementById("btn-af").onclick  =doAutofill;
+  document.getElementById("btn-sv").onclick  =saveForm;
+  document.getElementById("btn-sv2").onclick =saveForm;
+  document.getElementById("btn-can").onclick =cancelEdit;
+  document.getElementById("btn-can2").onclick=cancelEdit;
+  if(editingId!=="new") document.getElementById("btn-del").onclick=()=>deleteHouse(editingId);
 }
 
-function field(label,key,value,placeholder){
-  return `<div class="field"><label>${esc(label)}</label><input data-field="${key}" value="${esc(value||"")}" placeholder="${esc(placeholder)}"/></div>`;
-}
+const fld=(label,key,value,ph)=>`<div><label>${esc(label)}</label><input data-field="${key}" value="${esc(value||"")}" placeholder="${esc(ph)}"/></div>`;
 
-function refreshComputed() {
-  // re-render just the computed fields without full re-render
-  const pEl=document.querySelector(`[data-field="listPrice"]`);
-  // just trigger a lightweight re-render of the edit view
-  const fp=finalPrice(editForm);
-  // update ppsf display
-  document.querySelectorAll(".computed-field").forEach(el=>{
-    if(el.style.color==="#rgb(192, 132, 252)"||el.style.color==="rgb(192, 132, 252)"||el.style.color==="#c084fc"){
-      el.textContent=ppsf(editForm);
-    }
-    if(el.style.color==="rgb(74, 222, 128)"||el.style.color==="#4ade80"){
-      el.textContent=fp!==null?"$"+fp.toLocaleString():"";
-    }
-  });
-}
-
-// ─── Actions ──────────────────────────────────────────────────────────────────
-function startAdd() {
-  editForm=emptyHouse(); editingId="new"; activeView="edit"; renderAll();
-}
-function startEdit(house) {
-  editForm={ ...house, scores:{ ...house.scores } };
-  editingId=house.id; activeView="edit"; renderAll();
-}
-function cancelEdit() {
-  editForm=null; editingId=null; activeView="rankings"; renderAll();
-}
-function saveForm() {
+// ── Actions ───────────────────────────────────────────────────────────────────
+function startAdd()   { editForm=emptyHouse(); editingId="new"; activeView="edit"; renderAll(); }
+function startEdit(h) { editForm={...h,scores:{...h.scores}}; editingId=h.id; activeView="edit"; renderAll(); }
+function cancelEdit() { editForm=null; editingId=null; activeView="rankings"; renderAll(); }
+function saveForm(){
   if(!editForm) return;
   editForm.listingUrl=document.getElementById("url-input")?.value||editForm.listingUrl;
-  if(editingId==="new") houses=[...houses,editForm];
-  else houses=houses.map(h=>h.id===editingId?editForm:h);
-  saveToFirebase();
-  editForm=null; editingId=null; activeView="rankings"; renderAll();
-  toast("✅ House saved!");
+  if(editingId==="new") R().houses=[...houses(),editForm];
+  else R().houses=houses().map(x=>x.id===editingId?editForm:x);
+  saveToFirebase(); editForm=null; editingId=null; activeView="rankings"; renderAll(); toast("✅ House saved!");
 }
-function deleteHouse(id) {
+function deleteHouse(id){
   if(!confirm("Remove this house?")) return;
-  houses=houses.filter(h=>h.id!==id);
-  saveToFirebase();
-  editForm=null; editingId=null; activeView="rankings"; renderAll();
-  toast("🗑 House removed");
+  R().houses=houses().filter(h=>h.id!==id);
+  saveToFirebase(); editForm=null; editingId=null; activeView="rankings"; renderAll(); toast("🗑 House removed");
 }
 
-// ─── Auto-fill ────────────────────────────────────────────────────────────────
-async function doAutofill() {
-  const url=document.getElementById("url-input")?.value?.trim();
-  if(!url) return;
-  const btn=document.getElementById("btn-autofill");
-  btn.textContent="Loading…"; btn.disabled=true;
+// ── Auto-fill ─────────────────────────────────────────────────────────────────
+async function doAutofill(){
+  const url=document.getElementById("url-input")?.value?.trim(); if(!url) return;
+  const btn=document.getElementById("btn-af"); btn.textContent="Loading…"; btn.disabled=true;
   try {
     const res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:800,
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,
         messages:[{role:"user",content:`Given this real estate listing URL: ${url}
-Extract all available property details. Return ONLY a JSON object (no markdown) with these fields (empty string if unknown):
-{"nickname":"","address":"","listPrice":"","sqFeet":"","beds":"","baths":"","garage":"","yearBuilt":"","dateListed":""}
-For listPrice, just the number. For beds/baths just the number. For garage: "Yes", "No", or number of cars. For dateListed use YYYY-MM-DD.`}]
-      })
+Return ONLY a JSON object (no markdown): {"nickname":"","address":"","listPrice":"","sqFeet":"","beds":"","baths":"","garage":"","yearBuilt":"","dateListed":""}
+listPrice = number only. beds/baths = number only. garage = "Yes"/"No"/number. dateListed = YYYY-MM-DD.`}]})
     });
     const data=await res.json();
     const text=(data.content||[]).map(b=>b.text||"").join("");
-    const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
-    Object.assign(editForm,parsed,{listingUrl:url});
+    Object.assign(editForm,JSON.parse(text.replace(/```json|```/g,"").trim()),{listingUrl:url});
     renderEdit();
-  } catch(e) {
-    showAlert("Could not auto-populate from URL — please fill in manually.","error");
-  }
+  } catch(e){ showAlert("Could not auto-populate — please fill in manually.","error"); }
   btn.textContent="✨ Auto-fill"; btn.disabled=false;
 }
 
-// ─── CSV export / import ──────────────────────────────────────────────────────
-function exportCSV() {
+// ── CSV ───────────────────────────────────────────────────────────────────────
+function exportCSV(){
   const catH=CATEGORIES.map(c=>`score_${c.id}`);
-  const headers=["id","nickname","address","listPrice","predictedSellPrice","upgradeEstimate","sqFeet","beds","baths","garage","yearBuilt","dateListed","viewed","listingUrl","notes",...catH];
-  const weightRow=["WEIGHTS","","","","","","","","","","","","","","",...CATEGORIES.map(c=>weights[c.id])];
-  const rows=houses.map(h=>[
+  const headers=["id","nickname","address","listPrice","predictedSellPrice","upgradeEstimate","sqFeet","beds","baths","garage","yearBuilt","dateListed","viewed","sold","listingUrl","notes",...catH];
+  const wts=weights();
+  const wRow=["WEIGHTS","","","","","","","","","","","","","","","",...CATEGORIES.map(c=>wts[c.id])];
+  const rows=houses().map(h=>[
     h.id,h.nickname,h.address,h.listPrice,h.predictedSellPrice,h.upgradeEstimate,
     h.sqFeet,h.beds,h.baths,h.garage,h.yearBuilt,h.dateListed,
-    h.viewed?"true":"false",h.listingUrl,
+    h.viewed?"true":"false",h.sold?"true":"false",h.listingUrl,
     `"${(h.notes||"").replace(/"/g,'""')}"`,
     ...CATEGORIES.map(c=>h.scores[c.id]??5),
   ]);
-  const csv=[headers,weightRow,...rows].map(r=>r.join(",")).join("\n");
+  const csv=[headers,wRow,...rows].map(r=>r.join(",")).join("\n");
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  a.download="house-hunter.csv"; a.click();
+  a.download=`house-hunter-${activeRegion}.csv`; a.click();
 }
 
-function importCSV(e) {
+function importCSV(e){
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=ev=>{
-    try {
+    try{
       const lines=ev.target.result.split("\n").filter(l=>l.trim());
-      const headers=lines[0].split(",");
-      const imported=[]; let newW={...weights};
+      const headers=lines[0].split(","); const imported=[]; let newW={...weights()};
       for(let i=1;i<lines.length;i++){
         const cols=[]; let cur="",inQ=false;
-        for(const ch of lines[i]){ if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){cols.push(cur);cur="";}else cur+=ch; }
+        for(const ch of lines[i]){if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){cols.push(cur);cur="";}else cur+=ch;}
         cols.push(cur);
         const get=n=>(cols[headers.indexOf(n)]||"").trim();
-        if(get("id")==="WEIGHTS"){ CATEGORIES.forEach(c=>{const v=parseInt(get(`score_${c.id}`));if(!isNaN(v))newW[c.id]=v;}); continue; }
+        if(get("id")==="WEIGHTS"){CATEGORIES.forEach(c=>{const v=parseInt(get(`score_${c.id}`));if(!isNaN(v))newW[c.id]=v;});continue;}
         const scores={}; CATEGORIES.forEach(c=>{const v=parseInt(get(`score_${c.id}`));scores[c.id]=isNaN(v)?5:v;});
-        imported.push({ id:get("id")||Date.now().toString()+i, nickname:get("nickname"), address:get("address"), listPrice:get("listPrice"), predictedSellPrice:get("predictedSellPrice"), upgradeEstimate:get("upgradeEstimate"), sqFeet:get("sqFeet"), beds:get("beds"), baths:get("baths"), garage:get("garage"), yearBuilt:get("yearBuilt"), dateListed:get("dateListed"), viewed:get("viewed")==="true", listingUrl:get("listingUrl"), notes:get("notes").replace(/""/g,'"'), scores });
+        imported.push({id:get("id")||Date.now()+i,nickname:get("nickname"),address:get("address"),listPrice:get("listPrice"),predictedSellPrice:get("predictedSellPrice"),upgradeEstimate:get("upgradeEstimate"),sqFeet:get("sqFeet"),beds:get("beds"),baths:get("baths"),garage:get("garage"),yearBuilt:get("yearBuilt"),dateListed:get("dateListed"),viewed:get("viewed")==="true",sold:get("sold")==="true",listingUrl:get("listingUrl"),notes:get("notes").replace(/""/g,'"'),scores});
       }
-      if(!imported.length){ showAlert("No houses found in CSV.","error"); return; }
-      houses=imported; weights=newW;
-      saveToFirebase(); renderAll();
-      showAlert(`✅ Imported ${imported.length} houses successfully!`);
-    } catch(err){ showAlert("❌ Failed to parse CSV. Make sure it was exported from this tool.","error"); }
+      if(!imported.length){showAlert("No houses found in CSV.","error");return;}
+      R().houses=imported; R().weights=newW; saveToFirebase(); renderAll();
+      showAlert(`✅ Imported ${imported.length} houses into ${REGIONS[activeRegion].label}!`);
+    }catch(err){showAlert("❌ Failed to parse CSV.","error");}
   };
   reader.readAsText(file); e.target.value="";
 }
 
-// ─── Boot ─────────────────────────────────────────────────────────────────────
-function showApp() {
-  document.getElementById("loading").style.display="none";
-  document.getElementById("header").style.display="flex";
-  document.getElementById("app").style.display="block";
-}
-
-function checkConfig() {
-  // Check if placeholder text still present
-  return typeof window._fbSave === "function";
-}
-
-window.addEventListener("load", () => {
-  // Small delay to let the module run
+// ── Boot ──────────────────────────────────────────────────────────────────────
+window.addEventListener("load",()=>{
   setTimeout(()=>{
-    if(!checkConfig()){
+    if(!isConfigured()){
       document.getElementById("loading").style.display="none";
       document.getElementById("config-screen").style.display="block";
       return;
     }
 
-    // Subscribe to Firebase
-    window._fbSubscribe(data=>{
-      if(data){
-        houses  = data.houses  || [];
-        weights = data.weights || DEFAULT_WEIGHTS;
-      }
-      showApp();
-      renderAll();
+    // Subscribe both regions immediately so switching is instant
+    let booted=false;
+    ["bayarea","tahoe"].forEach(region=>{
+      window._fbSubscribeRegion(region, data=>{
+        if(data){ regionData[region].houses=data.houses||[]; regionData[region].weights=data.weights||{...DEFAULT_WEIGHTS}; }
+        if(!booted && region==="bayarea"){
+          booted=true;
+          document.getElementById("loading").style.display="none";
+          document.getElementById("header").style.display="flex";
+          document.getElementById("footer").style.display="block";
+          document.getElementById("app").style.display="block";
+        }
+        if(region===activeRegion) renderAll();
+      });
     });
 
-    // Wire buttons
-    document.getElementById("btn-weights").onclick=()=>{
-      document.getElementById("weights-panel").classList.toggle("open");
-    };
+    document.querySelectorAll(".region-tab").forEach(tab=>{ tab.onclick=()=>switchRegion(tab.dataset.region); });
+    document.getElementById("btn-weights").onclick=()=>document.getElementById("weights-panel").classList.toggle("open");
     document.getElementById("btn-export").onclick=exportCSV;
     document.getElementById("btn-add").onclick=startAdd;
     document.getElementById("csv-import-input").onchange=importCSV;
-  }, 300);
+  },300);
 });
 </script>
 </body>

@@ -7,12 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 
-  <!-- Firebase config here -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // 🔧 REPLACE THIS BLOCK with your own config from Firebase Console
     const firebaseConfig = {
       apiKey:            "AIzaSyDOd8CN2k-PBxv5_wwdRYdjjJ2nFn7wx70",
       authDomain:        "house-hunter-b211d.firebaseapp.com",
@@ -25,8 +23,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-
-    // Two separate Firebase paths, one per region
     window._fbSubscribeRegion = (region, cb) => onValue(ref(db, `house-hunter/${region}`), snap => cb(snap.val()));
     window._fbSaveRegion      = (region, data) => set(ref(db, `house-hunter/${region}`), data);
   </script>
@@ -62,27 +58,19 @@
     .btn-danger:hover { background: #f87171; color: #fff; }
     .btn-sm { padding: 7px 14px; font-size: 13px; }
 
-    /* CSS variables per region */
     body {
-      --accent: #c084fc;
-      --accent2: #818cf8;
+      --accent: #c084fc; --accent2: #818cf8;
       --accent-gradient: linear-gradient(135deg, #c084fc, #818cf8);
-      --accent-glow: rgba(192,132,252,.1);
-      --accent-dim: #c084fc20;
-      --accent-border: #c084fc40;
+      --accent-glow: rgba(192,132,252,.1); --accent-dim: #c084fc20; --accent-border: #c084fc40;
     }
     body.tahoe {
-      --accent: #38bdf8;
-      --accent2: #34d399;
+      --accent: #38bdf8; --accent2: #34d399;
       --accent-gradient: linear-gradient(135deg, #38bdf8, #34d399);
-      --accent-glow: rgba(56,189,248,.1);
-      --accent-dim: #38bdf820;
-      --accent-border: #38bdf840;
+      --accent-glow: rgba(56,189,248,.1); --accent-dim: #38bdf820; --accent-border: #38bdf840;
     }
 
     #app { max-width: 940px; margin: 0 auto; padding: 0 16px 80px; }
 
-    /* Header */
     #header {
       background: #0d1018; border-bottom: 1px solid #1e2535;
       padding: 14px 24px; display: flex; align-items: center;
@@ -94,7 +82,6 @@
     #header-sub { font-size: 11px; color: #64748b; font-family: 'DM Mono', monospace; }
     #header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-    /* Region tabs */
     #region-tabs { display: flex; gap: 6px; }
     .region-tab {
       cursor: pointer; padding: 7px 18px; border-radius: 20px; font-size: 13px;
@@ -104,17 +91,14 @@
     .region-tab:hover { color: #94a3b8; border-color: #4a5568; }
     .region-tab.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-border); }
 
-    /* Weights panel */
     #weights-panel { background: #11151f; border-bottom: 1px solid #1e2535; padding: 20px 24px; display: none; }
     #weights-panel.open { display: block; }
     #weights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 16px; max-width: 860px; }
     .weight-badge { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); background: var(--accent-dim); padding: 2px 8px; border-radius: 6px; }
 
-    /* Toast */
     #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e2535; border: 1px solid #2d3748; color: #e2e8f0; padding: 10px 20px; border-radius: 10px; font-size: 14px; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
     #toast.show { opacity: 1; }
 
-    /* Cards */
     .house-card { background: #161b27; border: 1px solid #1e2535; border-radius: 16px; padding: 20px; transition: border-color .2s; margin-bottom: 12px; }
     .house-card:hover { border-color: var(--accent-border); }
     .card-top { display: flex; align-items: flex-start; gap: 14px; }
@@ -139,12 +123,10 @@
     .btn-edit-card { background: #1e2535; border: 1px solid #2d3748; color: #94a3b8; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
     .btn-edit-card:hover { background: var(--accent-gradient); color: #fff; border-color: transparent; }
 
-    /* Score ring */
     .score-ring-outer { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .score-ring-inner { width: 38px; height: 38px; border-radius: 50%; background: #161b27; display: flex; align-items: center; justify-content: center; }
     .score-ring-text { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700; }
 
-    /* Section card */
     .section-card { background: #161b27; border: 1px solid #1e2535; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
     .section-title { font-size: 13px; font-weight: 600; color: #94a3b8; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 14px; }
@@ -162,7 +144,6 @@
     .weighted-total { margin-top: 20px; padding: 16px; background: #0f1117; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
     .weighted-total-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; }
 
-    /* View tabs (rankings / edit form) */
     #view-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
     .view-tab { cursor: pointer; padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all .2s; color: #64748b; }
     .view-tab:hover { color: #94a3b8; }
@@ -179,7 +160,6 @@
     #config-screen p  { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
     #config-screen code { background: #0f1117; padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); }
 
-    /* Footer */
     #footer { background: #0d1018; border-top: 1px solid #1e2535; padding: 14px 24px; position: sticky; bottom: 0; z-index: 100; }
     #footer-inner { max-width: 940px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
 
@@ -231,7 +211,6 @@
   <div id="view-edit" style="display:none"></div>
 </div>
 
-<!-- Footer -->
 <div id="footer" style="display:none">
   <div id="footer-inner">
     <span style="font-size:13px;color:#4a5568;font-family:'DM Mono',monospace">house-hunter</span>
@@ -248,7 +227,9 @@
 <div id="toast"></div>
 
 <script type="module">
-const CATEGORIES = [
+
+// ── Region-specific category definitions ──────────────────────────────────────
+const CATEGORIES_BAYAREA = [
   { id:"bart",     label:"Proximity to BART",    icon:"🚇" },
   { id:"grocery",  label:"Proximity to Grocery", icon:"🛒" },
   { id:"kitchen",  label:"Kitchen",              icon:"🍳" },
@@ -259,21 +240,23 @@ const CATEGORIES = [
   { id:"finished", label:"How Finished It Is",   icon:"🔨" },
   { id:"privacy",  label:"Privacy",              icon:"🔒" },
 ];
-const DEFAULT_WEIGHTS = Object.fromEntries(CATEGORIES.map(c=>[c.id,3]));
-const DEFAULT_SCORES  = Object.fromEntries(CATEGORIES.map(c=>[c.id,5]));
+
+const CATEGORIES_TAHOE = [
+  { id:"slopes",      label:"Proximity to Slopes",  icon:"⛷️" },
+  { id:"grocery",     label:"Proximity to Grocery", icon:"🛒" },
+  { id:"kitchen",     label:"Kitchen",              icon:"🍳" },
+  { id:"flow",        label:"Flow",                 icon:"🌊" },
+  { id:"vibe",        label:"Vibe",                 icon:"✨" },
+  { id:"maintenance", label:"Ease of Maintenance",  icon:"🔧" },
+];
+
 const REGIONS = { bayarea:{label:"Bay Area",emoji:"🌉"}, tahoe:{label:"Tahoe",emoji:"🏔"} };
+const getCategories = () => activeRegion === "tahoe" ? CATEGORIES_TAHOE : CATEGORIES_BAYAREA;
 
-const emptyHouse = () => ({
-  id:Date.now().toString(), nickname:"", address:"", listPrice:"",
-  predictedSellPrice:"", upgradeEstimate:"", sqFeet:"", beds:"", baths:"",
-  garage:"", yearBuilt:"", dateListed:"", viewed:false, sold:false,
-  listingUrl:"", notes:"", scores:{...DEFAULT_SCORES},
-});
-
-// ── Per-region state ──────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 const regionData = {
-  bayarea: { houses:[], weights:{...DEFAULT_WEIGHTS} },
-  tahoe:   { houses:[], weights:{...DEFAULT_WEIGHTS} },
+  bayarea: { houses:[], weights:Object.fromEntries(CATEGORIES_BAYAREA.map(c=>[c.id,3])) },
+  tahoe:   { houses:[], weights:Object.fromEntries(CATEGORIES_TAHOE.map(c=>[c.id,3]))   },
 };
 
 let activeRegion = "bayarea";
@@ -285,19 +268,31 @@ const R       = () => regionData[activeRegion];
 const houses  = () => R().houses;
 const weights = () => R().weights;
 
+const emptyHouse = () => ({
+  id:Date.now().toString(), nickname:"", address:"", listPrice:"",
+  predictedSellPrice:"", upgradeEstimate:"", hoa:"", sqFeet:"", beds:"", baths:"",
+  garage:"", yearBuilt:"", dateListed:"", viewed:false, sold:false,
+  listingUrl:"", notes:"",
+  scores:Object.fromEntries(getCategories().map(c=>[c.id,5])),
+});
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt$ = v => { const n=parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isNaN(n)?"":"$"+n.toLocaleString(); };
-const finalPrice = h => {
-  const s=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
-  const u=parseFloat(String(h.upgradeEstimate||"").replace(/[^0-9.]/g,""));
-  return (!s&&!u)?null:(s||0)+(u||0);
-};
+
 const ppsf = h => {
   const p=parseFloat(String(h.listPrice||"").replace(/[^0-9.]/g,"")), q=parseFloat(h.sqFeet);
   return (!p||!q)?"—":"$"+Math.round(p/q).toLocaleString()+"/sqft";
 };
-const computeScore=(scores,wts)=>{
-  let t=0,m=0; for(const c of CATEGORIES){const w=wts[c.id]||1;t+=(scores[c.id]||0)*w;m+=10*w;}
+
+// Bay Area final price: predicted sell + upgrade estimate
+const finalPriceBayArea = h => {
+  const s=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
+  const u=parseFloat(String(h.upgradeEstimate||"").replace(/[^0-9.]/g,""));
+  return (!s&&!u)?null:(s||0)+(u||0);
+};
+
+const computeScore=(scores,wts,cats)=>{
+  let t=0,m=0; for(const c of cats){const w=wts[c.id]||1;t+=(scores[c.id]||0)*w;m+=10*w;}
   return m===0?0:Math.round(t/m*100);
 };
 const scoreColor=s=>s>=75?"#4ade80":s>=50?"#facc15":"#f87171";
@@ -353,7 +348,9 @@ function renderViewTabs(){
 function renderRankings(){
   document.getElementById("view-edit").style.display="none";
   const el=document.getElementById("view-rankings"); el.style.display="block";
-  const h=houses(), wts=weights(), r=REGIONS[activeRegion];
+  const h=houses(), wts=weights(), cats=getCategories(), r=REGIONS[activeRegion];
+  const isTahoe=activeRegion==="tahoe";
+
   if(h.length===0){
     el.innerHTML=`<div style="text-align:center;padding:80px 20px">
       <div style="font-size:48px;margin-bottom:16px">${r.emoji}</div>
@@ -363,18 +360,39 @@ function renderRankings(){
     </div>`;
     document.getElementById("empty-add").onclick=startAdd; return;
   }
+
   const sorted=[...h].sort((a,b)=>{
     if(a.sold&&!b.sold)return 1; if(!a.sold&&b.sold)return -1;
-    return computeScore(b.scores,wts)-computeScore(a.scores,wts);
+    return computeScore(b.scores,wts,cats)-computeScore(a.scores,wts,cats);
   });
   const activeH=sorted.filter(x=>!x.sold);
   const rankColors=["#ffd700","#c0c0c0","#cd7f32"];
+
   el.innerHTML=sorted.map(h=>{
-    const sold=!!h.sold, ar=activeH.indexOf(h), sc=computeScore(h.scores,wts);
+    const sold=!!h.sold, ar=activeH.indexOf(h), sc=computeScore(h.scores,wts,cats);
     const rc=!sold&&ar<3?rankColors[ar]:"#4a5568";
     const rbg=!sold&&ar<3?rankColors[ar]+"20":"#1a1f2e";
-    const fp=finalPrice(h), deg=sc*3.6, col=sold?"#4a5568":scoreColor(sc);
+    const deg=sc*3.6, col=sold?"#4a5568":scoreColor(sc);
     const hasNotes=h.notes&&h.notes.trim().length>0, isLong=h.notes&&h.notes.length>120;
+
+    // Final estimate chip — region-specific
+    let finalChip="";
+    if(!sold){
+      if(isTahoe){
+        const sp=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
+        const hoaVal=parseFloat(String(h.hoa||"").replace(/[^0-9.]/g,""));
+        if(sp||hoaVal){
+          const parts=[];
+          if(sp) parts.push(`$${sp.toLocaleString()}`);
+          if(hoaVal) parts.push(`$${hoaVal.toLocaleString()}/mo HOA`);
+          finalChip=`<div class="chip chip-hl"><span class="lbl">Est: </span><span class="val">${parts.join(" + ")}</span></div>`;
+        }
+      } else {
+        const fp=finalPriceBayArea(h);
+        if(fp!==null) finalChip=`<div class="chip chip-hl"><span class="lbl">Final: </span><span class="val">$${fp.toLocaleString()}</span></div>`;
+      }
+    }
+
     const notesHtml=hasNotes?`
       <div class="card-notes" id="np-${esc(h.id)}" style="${sold?"opacity:.5":""}">
         <span class="card-notes-full">${esc(isLong?h.notes.slice(0,120)+"…":h.notes)}</span>
@@ -397,7 +415,7 @@ function renderRankings(){
           <div class="card-addr">${esc(h.address||"No address")}</div>
           ${!sold?`<div class="chips">
             ${h.listPrice?`<div class="chip"><span class="lbl">List: </span><span class="val">${esc(fmt$(h.listPrice))}</span></div>`:""}
-            ${fp!==null?`<div class="chip chip-hl"><span class="lbl">Final: </span><span class="val">$${fp.toLocaleString()}</span></div>`:""}
+            ${finalChip}
             ${h.sqFeet?`<div class="chip"><span class="lbl">SqFt: </span><span class="val">${Number(h.sqFeet).toLocaleString()}</span></div>`:""}
             ${h.beds?`<div class="chip"><span class="lbl">Beds: </span><span class="val">${esc(h.beds)}</span></div>`:""}
             ${h.baths?`<div class="chip"><span class="lbl">Baths: </span><span class="val">${esc(h.baths)}</span></div>`:""}
@@ -430,14 +448,14 @@ function renderRankings(){
 }
 
 function renderWeightsPanel(){
-  const wts=weights();
-  document.getElementById("weights-grid").innerHTML=CATEGORIES.map(cat=>`
+  const wts=weights(), cats=getCategories();
+  document.getElementById("weights-grid").innerHTML=cats.map(cat=>`
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <span style="font-size:13px;color:#cbd5e1">${cat.icon} ${esc(cat.label)}</span>
-        <span class="weight-badge" id="wb-${cat.id}">${wts[cat.id]}×</span>
+        <span class="weight-badge" id="wb-${cat.id}">${wts[cat.id]||3}×</span>
       </div>
-      <input type="range" min="1" max="5" step="1" value="${wts[cat.id]}" data-cat="${cat.id}" class="wslider"/>
+      <input type="range" min="1" max="5" step="1" value="${wts[cat.id]||3}" data-cat="${cat.id}" class="wslider"/>
     </div>`).join("");
   document.querySelectorAll(".wslider").forEach(sl=>{
     sl.oninput=()=>{ weights()[sl.dataset.cat]=parseInt(sl.value); document.getElementById("wb-"+sl.dataset.cat).textContent=sl.value+"×"; saveToFirebase(); renderAll(); };
@@ -447,14 +465,17 @@ function renderWeightsPanel(){
 function renderEdit(){
   document.getElementById("view-rankings").style.display="none";
   const el=document.getElementById("view-edit"); el.style.display="block";
-  const h=editForm, wts=weights(), fp=finalPrice(h), ws=computeScore(h.scores,wts), wc=scoreColor(ws);
-  const scoreRows=CATEGORIES.map(cat=>{
-    const sc=h.scores[cat.id]||5, col=sc>=7?"#4ade80":sc>=4?"#facc15":"#f87171";
+  const h=editForm, wts=weights(), cats=getCategories();
+  const isTahoe=activeRegion==="tahoe";
+  const ws=computeScore(h.scores,wts,cats), wc=scoreColor(ws);
+
+  const scoreRows=cats.map(cat=>{
+    const sc=h.scores[cat.id]??5, col=sc>=7?"#4ade80":sc>=4?"#facc15":"#f87171";
     return `<div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span style="font-size:14px;color:#cbd5e1">${cat.icon} ${esc(cat.label)}</span>
         <div style="display:flex;gap:6px;align-items:center">
-          <span style="font-size:11px;color:#64748b;font-family:'DM Mono',monospace">${wts[cat.id]}× wt</span>
+          <span style="font-size:11px;color:#64748b;font-family:'DM Mono',monospace">${wts[cat.id]||3}× wt</span>
           <span class="score-val" id="sv-${cat.id}" style="color:${col};background:${col}15">${sc}/10</span>
         </div>
       </div>
@@ -462,6 +483,54 @@ function renderEdit(){
       <div class="score-ticks"><span>1</span><span>5</span><span>10</span></div>
     </div>`;
   }).join("");
+
+  // Computed final estimate field for edit form
+  let finalField="";
+  if(isTahoe){
+    const sp=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
+    const hoaVal=parseFloat(String(h.hoa||"").replace(/[^0-9.]/g,""));
+    if(sp||hoaVal){
+      const parts=[];
+      if(sp) parts.push(`$${sp.toLocaleString()}`);
+      if(hoaVal) parts.push(`$${hoaVal.toLocaleString()}/mo HOA`);
+      finalField=`<div><label>Estimated Value</label><div class="computed-field" style="color:#4ade80;font-weight:700">${parts.join(" + ")}</div></div>`;
+    }
+  } else {
+    const fp=finalPriceBayArea(h);
+    if(fp!==null) finalField=`<div><label>Final Price (Sell + Upgrades)</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${fp.toLocaleString()}</div></div>`;
+  }
+
+  // Property fields are region-specific
+  const propFields = isTahoe ? `
+    ${fld("Nickname *","nickname",h.nickname,"e.g. The Ski Chalet")}
+    ${fld("Address","address",h.address,"123 Mountain Rd")}
+    ${fld("List Price ($)","listPrice",h.listPrice,"650000")}
+    ${fld("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"675000")}
+    ${fld("HOA ($/month)","hoa",h.hoa,"450")}
+    ${fld("Sq Feet","sqFeet",h.sqFeet,"1800")}
+    ${fld("Beds","beds",h.beds,"3")}
+    ${fld("Baths","baths",h.baths,"2")}
+    ${fld("Garage","garage",h.garage,"Yes / No / 2-car")}
+    ${fld("Year Built","yearBuilt",h.yearBuilt,"1985")}
+    <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
+    <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
+    ${finalField}
+  ` : `
+    ${fld("Nickname *","nickname",h.nickname,"e.g. The Blue House")}
+    ${fld("Address","address",h.address,"123 Main St")}
+    ${fld("List Price ($)","listPrice",h.listPrice,"850000")}
+    ${fld("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"875000")}
+    ${fld("Upgrade Estimate ($)","upgradeEstimate",h.upgradeEstimate,"30000")}
+    ${fld("Sq Feet","sqFeet",h.sqFeet,"1800")}
+    ${fld("Beds","beds",h.beds,"3")}
+    ${fld("Baths","baths",h.baths,"2")}
+    ${fld("Garage","garage",h.garage,"Yes / No / 2-car")}
+    ${fld("Year Built","yearBuilt",h.yearBuilt,"1965")}
+    <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
+    <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
+    ${finalField}
+  `;
+
   el.innerHTML=`
     <div id="edit-header">
       <div id="edit-title">${esc(editingId==="new"?"Add New House":h.nickname||"Edit House")}</div>
@@ -480,21 +549,7 @@ function renderEdit(){
     </div>
     <div class="section-card">
       <div class="section-title">🏠 Property Info</div>
-      <div class="form-grid">
-        ${fld("Nickname *","nickname",h.nickname,"e.g. The Blue House")}
-        ${fld("Address","address",h.address,"123 Main St")}
-        ${fld("List Price ($)","listPrice",h.listPrice,"850000")}
-        ${fld("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"875000")}
-        ${fld("Upgrade Estimate ($)","upgradeEstimate",h.upgradeEstimate,"30000")}
-        ${fld("Sq Feet","sqFeet",h.sqFeet,"1800")}
-        ${fld("Beds","beds",h.beds,"3")}
-        ${fld("Baths","baths",h.baths,"2")}
-        ${fld("Garage","garage",h.garage,"Yes / No / 2-car")}
-        ${fld("Year Built","yearBuilt",h.yearBuilt,"1965")}
-        <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
-        <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
-        ${fp!==null?`<div><label>Final Price (Sell + Upgrades)</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${fp.toLocaleString()}</div></div>`:""}
-      </div>
+      <div class="form-grid">${propFields}</div>
       <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:16px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:14px;color:#cbd5e1">
           <input type="checkbox" id="chk-viewed" ${h.viewed?"checked":""}/>We've toured this house
@@ -530,8 +585,8 @@ function renderEdit(){
       const v=parseInt(sl.value); editForm.scores[sl.dataset.cat]=v;
       const col=v>=7?"#4ade80":v>=4?"#facc15":"#f87171";
       const b=document.getElementById("sv-"+sl.dataset.cat); b.textContent=v+"/10"; b.style.color=col; b.style.background=col+"15";
-      const ws2=computeScore(editForm.scores,weights()), td=document.getElementById("total-score");
-      td.textContent=ws2+"%"; td.style.color=scoreColor(ws2);
+      const ws2=computeScore(editForm.scores,weights(),getCategories());
+      const td=document.getElementById("total-score"); td.textContent=ws2+"%"; td.style.color=scoreColor(ws2);
     };
   });
   document.getElementById("btn-af").onclick  =doAutofill;
@@ -570,8 +625,8 @@ async function doAutofill(){
       method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,
         messages:[{role:"user",content:`Given this real estate listing URL: ${url}
-Return ONLY a JSON object (no markdown): {"nickname":"","address":"","listPrice":"","sqFeet":"","beds":"","baths":"","garage":"","yearBuilt":"","dateListed":""}
-listPrice = number only. beds/baths = number only. garage = "Yes"/"No"/number. dateListed = YYYY-MM-DD.`}]})
+Return ONLY a JSON object (no markdown): {"nickname":"","address":"","listPrice":"","sqFeet":"","beds":"","baths":"","garage":"","yearBuilt":"","dateListed":"","hoa":""}
+listPrice/hoa = number only. beds/baths = number only. garage = "Yes"/"No"/number. dateListed = YYYY-MM-DD. hoa = monthly amount if listed.`}]})
     });
     const data=await res.json();
     const text=(data.content||[]).map(b=>b.text||"").join("");
@@ -583,16 +638,17 @@ listPrice = number only. beds/baths = number only. garage = "Yes"/"No"/number. d
 
 // ── CSV ───────────────────────────────────────────────────────────────────────
 function exportCSV(){
-  const catH=CATEGORIES.map(c=>`score_${c.id}`);
-  const headers=["id","nickname","address","listPrice","predictedSellPrice","upgradeEstimate","sqFeet","beds","baths","garage","yearBuilt","dateListed","viewed","sold","listingUrl","notes",...catH];
+  const cats=getCategories();
+  const catH=cats.map(c=>`score_${c.id}`);
+  const headers=["id","nickname","address","listPrice","predictedSellPrice","upgradeEstimate","hoa","sqFeet","beds","baths","garage","yearBuilt","dateListed","viewed","sold","listingUrl","notes",...catH];
   const wts=weights();
-  const wRow=["WEIGHTS","","","","","","","","","","","","","","","",...CATEGORIES.map(c=>wts[c.id])];
+  const wRow=["WEIGHTS","","","","","","","","","","","","","","","","","",...cats.map(c=>wts[c.id]||3)];
   const rows=houses().map(h=>[
-    h.id,h.nickname,h.address,h.listPrice,h.predictedSellPrice,h.upgradeEstimate,
+    h.id,h.nickname,h.address,h.listPrice,h.predictedSellPrice,h.upgradeEstimate||"",h.hoa||"",
     h.sqFeet,h.beds,h.baths,h.garage,h.yearBuilt,h.dateListed,
     h.viewed?"true":"false",h.sold?"true":"false",h.listingUrl,
     `"${(h.notes||"").replace(/"/g,'""')}"`,
-    ...CATEGORIES.map(c=>h.scores[c.id]??5),
+    ...cats.map(c=>h.scores[c.id]??5),
   ]);
   const csv=[headers,wRow,...rows].map(r=>r.join(",")).join("\n");
   const a=document.createElement("a");
@@ -605,6 +661,7 @@ function importCSV(e){
   const reader=new FileReader();
   reader.onload=ev=>{
     try{
+      const cats=getCategories();
       const lines=ev.target.result.split("\n").filter(l=>l.trim());
       const headers=lines[0].split(","); const imported=[]; let newW={...weights()};
       for(let i=1;i<lines.length;i++){
@@ -612,9 +669,9 @@ function importCSV(e){
         for(const ch of lines[i]){if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){cols.push(cur);cur="";}else cur+=ch;}
         cols.push(cur);
         const get=n=>(cols[headers.indexOf(n)]||"").trim();
-        if(get("id")==="WEIGHTS"){CATEGORIES.forEach(c=>{const v=parseInt(get(`score_${c.id}`));if(!isNaN(v))newW[c.id]=v;});continue;}
-        const scores={}; CATEGORIES.forEach(c=>{const v=parseInt(get(`score_${c.id}`));scores[c.id]=isNaN(v)?5:v;});
-        imported.push({id:get("id")||Date.now()+i,nickname:get("nickname"),address:get("address"),listPrice:get("listPrice"),predictedSellPrice:get("predictedSellPrice"),upgradeEstimate:get("upgradeEstimate"),sqFeet:get("sqFeet"),beds:get("beds"),baths:get("baths"),garage:get("garage"),yearBuilt:get("yearBuilt"),dateListed:get("dateListed"),viewed:get("viewed")==="true",sold:get("sold")==="true",listingUrl:get("listingUrl"),notes:get("notes").replace(/""/g,'"'),scores});
+        if(get("id")==="WEIGHTS"){cats.forEach(c=>{const v=parseInt(get(`score_${c.id}`));if(!isNaN(v))newW[c.id]=v;});continue;}
+        const scores={}; cats.forEach(c=>{const v=parseInt(get(`score_${c.id}`));scores[c.id]=isNaN(v)?5:v;});
+        imported.push({id:get("id")||Date.now()+i,nickname:get("nickname"),address:get("address"),listPrice:get("listPrice"),predictedSellPrice:get("predictedSellPrice"),upgradeEstimate:get("upgradeEstimate"),hoa:get("hoa"),sqFeet:get("sqFeet"),beds:get("beds"),baths:get("baths"),garage:get("garage"),yearBuilt:get("yearBuilt"),dateListed:get("dateListed"),viewed:get("viewed")==="true",sold:get("sold")==="true",listingUrl:get("listingUrl"),notes:get("notes").replace(/""/g,'"'),scores});
       }
       if(!imported.length){showAlert("No houses found in CSV.","error");return;}
       R().houses=imported; R().weights=newW; saveToFirebase(); renderAll();
@@ -633,12 +690,17 @@ window.addEventListener("load",()=>{
       return;
     }
 
-    // Subscribe both regions immediately so switching is instant
     let booted=false;
     ["bayarea","tahoe"].forEach(region=>{
       window._fbSubscribeRegion(region, data=>{
-        if(data){ regionData[region].houses=data.houses||[]; regionData[region].weights=data.weights||{...DEFAULT_WEIGHTS}; }
-        if(!booted && region==="bayarea"){
+        if(data){
+          regionData[region].houses=data.houses||[];
+          // Restore only weights that belong to this region's categories
+          const cats=region==="tahoe"?CATEGORIES_TAHOE:CATEGORIES_BAYAREA;
+          const saved=data.weights||{};
+          regionData[region].weights=Object.fromEntries(cats.map(c=>[c.id,saved[c.id]||3]));
+        }
+        if(!booted&&region==="bayarea"){
           booted=true;
           document.getElementById("loading").style.display="none";
           document.getElementById("header").style.display="flex";

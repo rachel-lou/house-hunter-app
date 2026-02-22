@@ -7,28 +7,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 
-  <!-- STEP 1: Paste your Firebase config here -->
+  <!-- Firebase config here -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey:            "AIzaSyDOd8CN2k-PBxv5_wwdRYdjjJ2nFn7wx70",
-    authDomain:        "house-hunter-b211d.firebaseapp.com",
-    databaseURL:       "https://house-hunter-b211d-default-rtdb.firebaseio.com",
-    projectId:         "house-hunter-b211d",
-    storageBucket:     "house-hunter-b211d.firebasestorage.app",
-    messagingSenderId: "394632511568",
-    appId:             "1:394632511568:web:6342315041ec7d42f85155"
-  };
+    // 🔧 REPLACE THIS BLOCK with your own config from Firebase Console
+    const firebaseConfig = {
+      apiKey:            "AIzaSyDOd8CN2k-PBxv5_wwdRYdjjJ2nFn7wx70",
+      authDomain:        "house-hunter-b211d.firebaseapp.com",
+      databaseURL:       "https://house-hunter-b211d-default-rtdb.firebaseio.com",
+      projectId:         "house-hunter-b211d",
+      storageBucket:     "house-hunter-b211d.firebasestorage.app",
+      messagingSenderId: "394632511568",
+      appId:             "1:394632511568:web:6342315041ec7d42f85155",
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
-  const DATA_REF = ref(db, "house-hunter");
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
 
-  window._fbSubscribe = (cb) => onValue(DATA_REF, (snap) => cb(snap.val()));
-  window._fbSave      = (data) => set(DATA_REF, data);
-</script>
+    // Two separate Firebase paths, one per region
+    window._fbSubscribeRegion = (region, cb) => onValue(ref(db, `house-hunter/${region}`), snap => cb(snap.val()));
+    window._fbSaveRegion      = (region, data) => set(ref(db, `house-hunter/${region}`), data);
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0f1117; color: #e2e8f0; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
@@ -251,7 +253,7 @@ const CATEGORIES = [
   { id:"grocery",  label:"Proximity to Grocery", icon:"🛒" },
   { id:"kitchen",  label:"Kitchen",              icon:"🍳" },
   { id:"flow",     label:"Flow",                 icon:"🌊" },
-  { id:"flip",     label:"Opportunity to Increase Value",  icon:"💰" },
+  { id:"flip",     label:"Opportunity to Flip",  icon:"💰" },
   { id:"school",   label:"School District",      icon:"🏫" },
   { id:"vibe",     label:"Vibe",                 icon:"✨" },
   { id:"finished", label:"How Finished It Is",   icon:"🔨" },

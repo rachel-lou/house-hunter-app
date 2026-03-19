@@ -68,6 +68,11 @@
       --accent-gradient: linear-gradient(135deg, #38bdf8, #34d399);
       --accent-glow: rgba(56,189,248,.1); --accent-dim: #38bdf820; --accent-border: #38bdf840;
     }
+    body.sf {
+      --accent: #fb923c; --accent2: #f472b6;
+      --accent-gradient: linear-gradient(135deg, #fb923c, #f472b6);
+      --accent-glow: rgba(251,146,60,.1); --accent-dim: #fb923c20; --accent-border: #fb923c40;
+    }
 
     #app { max-width: 940px; margin: 0 auto; padding: 0 16px 80px; }
 
@@ -188,7 +193,8 @@
     </div>
   </div>
   <div id="region-tabs">
-    <div class="region-tab active" data-region="bayarea">🌉 Bay Area</div>
+    <div class="region-tab active" data-region="eastbay">🌉 East Bay</div>
+    <div class="region-tab"       data-region="sf">🌁 SF</div>
     <div class="region-tab"       data-region="tahoe">🏔 Tahoe</div>
   </div>
   <div id="header-actions">
@@ -229,7 +235,7 @@
 <script type="module">
 
 // ── Region-specific category definitions ──────────────────────────────────────
-const CATEGORIES_BAYAREA = [
+const CATEGORIES_EASTBAY = [
   { id:"bart",     label:"Proximity to BART",    icon:"🚇" },
   { id:"grocery",  label:"Proximity to Grocery", icon:"🛒" },
   { id:"kitchen",  label:"Kitchen",              icon:"🍳" },
@@ -241,6 +247,16 @@ const CATEGORIES_BAYAREA = [
   { id:"privacy",  label:"Privacy",              icon:"🔒" },
 ];
 
+const CATEGORIES_SF = [
+  { id:"greenspace", label:"Proximity to Green Space",  icon:"🌳" },
+  { id:"grocery",    label:"Proximity to Grocery",      icon:"🛒" },
+  { id:"kitchen",    label:"Kitchen",                   icon:"🍳" },
+  { id:"flow",       label:"Flow",                      icon:"🌊" },
+  { id:"vibe",       label:"Vibe",                      icon:"✨" },
+  { id:"finished",   label:"How Finished It Is",        icon:"🔨" },
+  { id:"privacy",    label:"Privacy",                   icon:"🔒" },
+];
+
 const CATEGORIES_TAHOE = [
   { id:"slopes",      label:"Proximity to Slopes",  icon:"⛷️" },
   { id:"grocery",     label:"Proximity to Grocery", icon:"🛒" },
@@ -250,16 +266,17 @@ const CATEGORIES_TAHOE = [
   { id:"maintenance", label:"Ease of Maintenance",  icon:"🔧" },
 ];
 
-const REGIONS = { bayarea:{label:"Bay Area",emoji:"🌉"}, tahoe:{label:"Tahoe",emoji:"🏔"} };
-const getCategories = () => activeRegion === "tahoe" ? CATEGORIES_TAHOE : CATEGORIES_BAYAREA;
+const REGIONS = { eastbay:{label:"East Bay",emoji:"🌉"}, sf:{label:"San Francisco",emoji:"🌁"}, tahoe:{label:"Tahoe",emoji:"🏔"} };
+const getCategories = () => activeRegion === "tahoe" ? CATEGORIES_TAHOE : activeRegion === "sf" ? CATEGORIES_SF : CATEGORIES_EASTBAY;
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const regionData = {
-  bayarea: { houses:[], weights:Object.fromEntries(CATEGORIES_BAYAREA.map(c=>[c.id,3])) },
+  eastbay: { houses:[], weights:Object.fromEntries(CATEGORIES_EASTBAY.map(c=>[c.id,3])) },
+  sf:      { houses:[], weights:Object.fromEntries(CATEGORIES_SF.map(c=>[c.id,3]))      },
   tahoe:   { houses:[], weights:Object.fromEntries(CATEGORIES_TAHOE.map(c=>[c.id,3]))   },
 };
 
-let activeRegion = "bayarea";
+let activeRegion = "eastbay";
 let editingId    = null;
 let editForm     = null;
 let activeView   = "rankings";
@@ -309,7 +326,8 @@ function showAlert(msg,type="success"){
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
 const isConfigured=()=>typeof window._fbSaveRegion==="function";
-const saveToFirebase=()=>{ if(isConfigured()) window._fbSaveRegion(activeRegion,R()).catch(e=>toast("⚠️ "+e.message,4000)); };
+const fbKey=region=>region==="eastbay"?"bayarea":region;
+const saveToFirebase=()=>{ if(isConfigured()) window._fbSaveRegion(fbKey(activeRegion),R()).catch(e=>toast("⚠️ "+e.message,4000)); };
 
 // ── Region switching ──────────────────────────────────────────────────────────
 function switchRegion(region){
@@ -317,6 +335,7 @@ function switchRegion(region){
   editingId=null; editForm=null; activeView="rankings";
   activeRegion=region;
   document.body.classList.toggle("tahoe", region==="tahoe");
+  document.body.classList.toggle("sf", region==="sf");
   document.querySelectorAll(".region-tab").forEach(t=>t.classList.toggle("active",t.dataset.region===region));
   renderAll();
 }
@@ -350,6 +369,7 @@ function renderRankings(){
   const el=document.getElementById("view-rankings"); el.style.display="block";
   const h=houses(), wts=weights(), cats=getCategories(), r=REGIONS[activeRegion];
   const isTahoe=activeRegion==="tahoe";
+  const isEastBay=activeRegion==="eastbay";
 
   if(h.length===0){
     el.innerHTML=`<div style="text-align:center;padding:80px 20px">
@@ -387,9 +407,13 @@ function renderRankings(){
           if(hoaVal) parts.push(`$${hoaVal.toLocaleString()}/mo HOA`);
           finalChip=`<div class="chip chip-hl"><span class="lbl">Est: </span><span class="val">${parts.join(" + ")}</span></div>`;
         }
-      } else {
+      } else if(isEastBay){
         const fp=finalPriceBayArea(h);
         if(fp!==null) finalChip=`<div class="chip chip-hl"><span class="lbl">Final: </span><span class="val">$${fp.toLocaleString()}</span></div>`;
+      } else {
+        // SF: show predicted sell price
+        const sp=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
+        if(sp) finalChip=`<div class="chip chip-hl"><span class="lbl">Est Sell: </span><span class="val">$${sp.toLocaleString()}</span></div>`;
       }
     }
 
@@ -467,6 +491,8 @@ function renderEdit(){
   const el=document.getElementById("view-edit"); el.style.display="block";
   const h=editForm, wts=weights(), cats=getCategories();
   const isTahoe=activeRegion==="tahoe";
+  const isSF=activeRegion==="sf";
+  const isEastBay=activeRegion==="eastbay";
   const ws=computeScore(h.scores,wts,cats), wc=scoreColor(ws);
 
   const scoreRows=cats.map(cat=>{
@@ -495,9 +521,13 @@ function renderEdit(){
       if(hoaVal) parts.push(`$${hoaVal.toLocaleString()}/mo HOA`);
       finalField=`<div><label>Estimated Value</label><div class="computed-field" style="color:#4ade80;font-weight:700">${parts.join(" + ")}</div></div>`;
     }
-  } else {
+  } else if(isEastBay){
     const fp=finalPriceBayArea(h);
     if(fp!==null) finalField=`<div><label>Final Price (Sell + Upgrades)</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${fp.toLocaleString()}</div></div>`;
+  } else {
+    // SF: just show predicted sell
+    const sp=parseFloat(String(h.predictedSellPrice||"").replace(/[^0-9.]/g,""));
+    if(sp) finalField=`<div><label>Est. Sell Price</label><div class="computed-field" style="color:#4ade80;font-weight:700">$${sp.toLocaleString()}</div></div>`;
   }
 
   // Property fields are region-specific
@@ -512,6 +542,20 @@ function renderEdit(){
     ${fld("Baths","baths",h.baths,"2")}
     ${fld("Garage","garage",h.garage,"Yes / No / 2-car")}
     ${fld("Year Built","yearBuilt",h.yearBuilt,"1985")}
+    <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
+    <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
+    ${finalField}
+  ` : isSF ? `
+    ${fld("Nickname *","nickname",h.nickname,"e.g. The Noe Valley Gem")}
+    ${fld("Address","address",h.address,"123 Castro St")}
+    ${fld("List Price ($)","listPrice",h.listPrice,"1200000")}
+    ${fld("Predicted Sell Price ($)","predictedSellPrice",h.predictedSellPrice,"1250000")}
+    ${fld("HOA ($/month)","hoa",h.hoa,"500")}
+    ${fld("Sq Feet","sqFeet",h.sqFeet,"1200")}
+    ${fld("Beds","beds",h.beds,"3")}
+    ${fld("Baths","baths",h.baths,"2")}
+    ${fld("Garage","garage",h.garage,"Yes / No / 1-car")}
+    ${fld("Year Built","yearBuilt",h.yearBuilt,"1920")}
     <div><label>Date Listed</label><input type="date" data-field="dateListed" value="${esc(h.dateListed||"")}"/></div>
     <div><label>Price per SqFt</label><div class="computed-field" style="color:var(--accent)">${esc(ppsf(h))}</div></div>
     ${finalField}
@@ -691,16 +735,16 @@ window.addEventListener("load",()=>{
     }
 
     let booted=false;
-    ["bayarea","tahoe"].forEach(region=>{
-      window._fbSubscribeRegion(region, data=>{
+    ["eastbay","sf","tahoe"].forEach(region=>{
+      window._fbSubscribeRegion(fbKey(region), data=>{
         if(data){
           regionData[region].houses=data.houses||[];
           // Restore only weights that belong to this region's categories
-          const cats=region==="tahoe"?CATEGORIES_TAHOE:CATEGORIES_BAYAREA;
+          const cats=region==="tahoe"?CATEGORIES_TAHOE:region==="sf"?CATEGORIES_SF:CATEGORIES_EASTBAY;
           const saved=data.weights||{};
           regionData[region].weights=Object.fromEntries(cats.map(c=>[c.id,saved[c.id]||3]));
         }
-        if(!booted&&region==="bayarea"){
+        if(!booted&&region==="eastbay"){
           booted=true;
           document.getElementById("loading").style.display="none";
           document.getElementById("header").style.display="flex";
